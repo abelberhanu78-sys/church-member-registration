@@ -16,6 +16,11 @@ function doPost(e) {
     const data = JSON.parse(e.postData.contents);
     Logger.log("✓ Data parsed: " + data.member.fornamn + " " + data.member.efternamn);
     
+    // DEBUG: Log the raw data to see what we're getting
+    Logger.log("DEBUG: Full data = " + JSON.stringify(data));
+    Logger.log("DEBUG: Children array = " + JSON.stringify(data.children));
+    Logger.log("DEBUG: Children length = " + (data.children ? data.children.length : 0));
+    
     // Main member data
     const memberRow = [
       data.date,
@@ -55,6 +60,7 @@ function doPost(e) {
       for (let i = 0; i < data.children.length; i++) {
         try {
           const child = data.children[i];
+          Logger.log("Child " + (i + 1) + " raw data: " + JSON.stringify(child));
           
           // Skip empty children entries
           if (!child.namn || child.namn.trim() === '') {
@@ -78,7 +84,11 @@ function doPost(e) {
         }
       }
     } else {
-      Logger.log("No children to process");
+      Logger.log("No children to process or children array is empty/not array");
+      if (data.children) {
+        Logger.log("Children type: " + typeof data.children);
+        Logger.log("Is array: " + Array.isArray(data.children));
+      }
     }
     
     Logger.log("=== Processing Complete ===");

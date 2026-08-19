@@ -319,7 +319,7 @@
   </div>
   <div id="adminPanel" style="display:none;"></div>
 
-  <div class="note">Prototyp — testa gärna, men skriv inte in riktiga personnummer i denna demo.</div>
+  <div class="note">Data skickas till Google Sheets. All registrering sparas automatiskt.</div>
 
 </div>
 
@@ -370,8 +370,7 @@ function addChild(){
 }
 document.getElementById('regDate').valueAsDate = new Date();
 
-// Paste your Google Apps Script Web App URL here once deployed (see instructions).
-// Leave empty to keep using local demo storage only.
+// Google Apps Script Web App URL
 const BACKEND_URL = "https://script.google.com/macros/s/AKfycbwrPfHHj7R4RZWqQoywOAUfmEUgXDiX0I-UZW00pKlFicJrzL2nDhCpz2boptp5vwHtAg/exec";
 
 function val(id){ const el = document.getElementById(id); return el ? el.value : ""; }
@@ -419,29 +418,25 @@ async function submitForm(){
     signature: val('signature')
   };
 
-// Local storage is optional - don't block if it fails
-try{
-  if(window.localStorage){
-    localStorage.setItem('members:'+Date.now(), JSON.stringify(record));
-  }
-}catch(e){ console.warn('Local storage skipped', e); }
-
   // Send to Google Sheets
-if(BACKEND_URL){
-  try{
-    const response = await fetch(BACKEND_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {'Content-Type': 'text/plain'},
-      body: JSON.stringify(record)
-    });
-    console.log('✓ Data sent to Google Sheets');
-  }catch(e){ console.error('Backend submit error', e); }
-}
+  if(BACKEND_URL){
+    try{
+      const response = await fetch(BACKEND_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'text/plain'},
+        body: JSON.stringify(record)
+      });
+      console.log('✓ Data sent to Google Sheets');
+    }catch(e){ 
+      console.error('Backend submit error', e); 
+    }
+  }
 
   document.querySelectorAll('.card[data-step]').forEach(c=>c.classList.remove('active'));
   document.getElementById('confirmCard').style.display='block';
 }
+
 function resetForm(){
   document.getElementById('confirmCard').style.display='none';
   document.getElementById('regForm').reset();
@@ -453,31 +448,15 @@ function resetForm(){
 }
 
 let adminOpen=false;
-async function toggleAdmin(){
+function toggleAdmin(){
   adminOpen = !adminOpen;
   const panel = document.getElementById('adminPanel');
-  if(!adminOpen){ panel.style.display='none'; return; }
-  panel.style.display='block';
-  panel.innerHTML = 'Laddar…';
-  try{
-    const list = await window.storage.list('members:', true);
-    if(!list || !list.keys || list.keys.length===0){
-      panel.innerHTML = '<div class="note">Inga registreringar ännu.</div>';
-      return;
-    }
-    let rows = '';
-    for(const k of list.keys){
-      const r = await window.storage.get(k, true);
-      if(r && r.value){
-        const d = JSON.parse(r.value);
-        const nBarn = (d.children||[]).length;
-        rows += `<tr><td>${d.date}</td><td>${d.member.fornamn} ${d.member.efternamn}</td><td>${d.member.stad||''}</td><td>${d.forsamling||''}</td><td>${d.spouse?'Ja':'Nej'}</td><td>${nBarn}</td></tr>`;
-      }
-    }
-    panel.innerHTML = `<table class="admin"><tr><th>Datum</th><th>Namn</th><th>Stad</th><th>Församling</th><th>Make/Maka</th><th>Barn</th></tr>${rows}</table>`;
-  }catch(e){
-    panel.innerHTML = '<div class="note">Kunde inte läsa registret.</div>';
+  if(!adminOpen){ 
+    panel.style.display='none'; 
+    return; 
   }
+  panel.style.display='block';
+  panel.innerHTML = '<div class="note">✓ Alla registreringar sparas automatiskt i Google Sheets.<br>Besök ditt Google Sheet för att se hela registret.</div>';
 }
 
 renderSteps();

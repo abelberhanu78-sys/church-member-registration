@@ -419,22 +419,25 @@ async function submitForm(){
     signature: val('signature')
   };
 
-  // Always keep a local demo copy so the admin panel below works out of the box.
-  try{
-    await window.storage.set('members:'+Date.now(), JSON.stringify(record), true);
-  }catch(e){ console.error('Local storage error', e); }
-
-  // If a real backend is configured, also send it there.
-  if(BACKEND_URL){
-    try{
-      await fetch(BACKEND_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {'Content-Type': 'text/plain'},
-        body: JSON.stringify(record)
-      });
-    }catch(e){ console.error('Backend submit error', e); }
+// Local storage is optional - don't block if it fails
+try{
+  if(window.localStorage){
+    localStorage.setItem('members:'+Date.now(), JSON.stringify(record));
   }
+}catch(e){ console.warn('Local storage skipped', e); }
+
+  // Send to Google Sheets
+if(BACKEND_URL){
+  try{
+    const response = await fetch(BACKEND_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'text/plain'},
+      body: JSON.stringify(record)
+    });
+    console.log('✓ Data sent to Google Sheets');
+  }catch(e){ console.error('Backend submit error', e); }
+}
 
   document.querySelectorAll('.card[data-step]').forEach(c=>c.classList.remove('active'));
   document.getElementById('confirmCard').style.display='block';

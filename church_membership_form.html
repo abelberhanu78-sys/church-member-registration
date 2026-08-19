@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medlemsregistrering — Kidist Selassie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=Noto+Sans+Ethiopic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#123C2E;
+    --green-deep:#0B2A20;
+    --cream:#FBF6EA;
+    --gold:#B8862F;
+    --gold-soft:#D9B96A;
+    --burgundy:#6B1E23;
+    --ink:#2A2622;
+    --ink-soft:#5B564E;
+    --card:#FFFFFF;
+    --line:#E7DFCC;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .amh{ font-family:'Noto Sans Ethiopic','Inter',sans-serif; }
+
+  header.top{
+    background:linear-gradient(180deg,var(--green) 0%,var(--green-deep) 100%);
+    color:var(--cream);
+    padding:34px 20px 40px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  header.top::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:0;
+    height:4px;
+    background:linear-gradient(90deg,transparent, var(--gold-soft), transparent);
+  }
+  .cross{ width:34px; height:34px; margin:0 auto 14px; display:block; }
+  .cross path{ fill:none; stroke:var(--gold-soft); stroke-width:2.4; stroke-linecap:round; }
+  header.top h1{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:26px;
+    margin:0 0 6px;
+    letter-spacing:.2px;
+  }
+  header.top .sub-amh{ font-size:16px; opacity:.9; margin-bottom:4px; }
+  header.top .sub-sv{ font-size:13px; letter-spacing:.5px; text-transform:uppercase; opacity:.75; }
+
+  .wrap{ max-width:640px; margin:-22px auto 60px; padding:0 16px; }
+
+  .steps{
+    display:flex; justify-content:space-between;
+    background:var(--card); border-radius:14px;
+    box-shadow:0 10px 30px -14px rgba(11,42,32,.35);
+    padding:14px 10px; margin-bottom:18px;
+    font-size:12px; font-weight:600; color:var(--ink-soft);
+  }
+  .step{ flex:1; text-align:center; position:relative; cursor:default; }
+  .step .n{
+    width:22px;height:22px;border-radius:50%;
+    background:var(--line); color:var(--ink-soft);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 6px; font-size:11px;
+  }
+  .step.active .n{ background:var(--gold); color:#fff; }
+  .step.done .n{ background:var(--green); color:#fff; }
+  .step.active{ color:var(--green); }
+
+  .card{
+    background:var(--card);
+    border-radius:16px;
+    box-shadow:0 10px 30px -18px rgba(11,42,32,.3);
+    padding:26px 24px;
+    margin-bottom:18px;
+    display:none;
+  }
+  .card.active{ display:block; }
+
+  .card h2{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:19px;
+    margin:0 0 2px;
+    color:var(--green);
+  }
+  .card h2 .amh{ display:block; font-size:14px; color:var(--gold); font-weight:500; margin-top:2px; }
+  .divider{ height:1px; background:linear-gradient(90deg,var(--gold-soft),transparent); margin:14px 0 18px; }
+
+  label{
+    display:block; font-size:12.5px; font-weight:600;
+    color:var(--ink-soft); margin:14px 0 6px;
+  }
+  label .amh{ font-weight:500; color:#8a8072; font-size:11.5px; }
+  input[type=text], input[type=tel], input[type=email], input[type=date], input[type=number], select{
+    width:100%; padding:11px 12px; border:1px solid var(--line);
+    border-radius:10px; font-size:14px; font-family:inherit; color:var(--ink);
+    background:#FEFCF7; transition:border-color .15s, box-shadow .15s;
+  }
+  input:focus, select:focus{
+    outline:none; border-color:var(--gold);
+    box-shadow:0 0 0 3px rgba(184,134,47,.15);
+  }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:480px){ .row2{ grid-template-columns:1fr; } }
+
+  .toggle-row{
+    display:flex; align-items:center; gap:10px;
+    padding:12px 14px; background:#F6F0DE; border-radius:10px; margin-top:6px;
+    font-size:13.5px; font-weight:600; color:var(--green);
+  }
+  .toggle-row input{ width:16px; height:16px; accent-color:var(--green); }
+
+  .child-block{
+    border:1px dashed var(--line); border-radius:12px;
+    padding:14px; margin-top:12px; position:relative;
+  }
+  .child-block .badge{
+    position:absolute; top:-10px; left:12px;
+    background:var(--gold); color:#fff; font-size:11px; font-weight:700;
+    padding:2px 9px; border-radius:20px;
+  }
+  .remove-child{
+    position:absolute; top:10px; right:10px; border:none; background:none;
+    color:var(--burgundy); font-size:12px; font-weight:600; cursor:pointer;
+  }
+  .add-child{
+    margin-top:14px; width:100%; padding:10px; border-radius:10px;
+    border:1px dashed var(--gold); background:none; color:var(--gold);
+    font-weight:700; font-size:13px; cursor:pointer;
+  }
+  .add-child:hover{ background:#FBF3E2; }
+
+  .consent-box{
+    background:#F6F0DE; border-radius:12px; padding:14px 16px;
+    font-size:12.5px; line-height:1.6; color:var(--ink-soft); margin-bottom:16px;
+  }
+
+  .nav-buttons{ display:flex; gap:10px; margin-top:22px; }
+  button.nav{
+    flex:1; padding:13px; border-radius:10px; font-weight:700; font-size:14px;
+    border:none; cursor:pointer; font-family:inherit;
+  }
+  button.back{ background:#EFE9D8; color:var(--ink-soft); }
+  button.next, button.submit{ background:var(--green); color:#fff; }
+  button.next:hover, button.submit:hover{ background:var(--green-deep); }
+  button.nav:disabled{ opacity:.5; cursor:not-allowed; }
+
+  .confirm{
+    text-align:center; padding:40px 20px;
+  }
+  .confirm .cross{ width:44px; height:44px; }
+  .confirm h2{ font-family:'Fraunces',serif; color:var(--green); font-size:22px; margin:10px 0 6px; }
+  .confirm p{ color:var(--ink-soft); font-size:14px; }
+
+  .admin-toggle{
+    text-align:center; margin-top:6px;
+  }
+  .admin-toggle button{
+    background:none; border:none; color:var(--gold); font-size:12.5px;
+    font-weight:700; cursor:pointer; text-decoration:underline;
+  }
+  table.admin{ width:100%; border-collapse:collapse; font-size:12.5px; margin-top:14px; }
+  table.admin th, table.admin td{ border:1px solid var(--line); padding:7px 8px; text-align:left; }
+  table.admin th{ background:#F6F0DE; color:var(--green); }
+
+  .note{ font-size:11.5px; color:#a68a4d; text-align:center; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <svg class="cross" viewBox="0 0 40 40"><path d="M20 4 V36 M8 14 H32 M13 8 L27 32 M27 8 L13 32"/></svg>
+  <h1>Kidist Selassie Kyrka i Sverige</h1>
+  <div class="sub-amh amh">የአባልነት ምዝገቢያ ቅጽ</div>
+  <div class="sub-sv">Medlemsregistrering</div>
+</header>
+
+<div class="wrap">
+
+  <div class="steps" id="steps"></div>
+
+  <form id="regForm">
+
+    <!-- Step 1: Parish + Member -->
+    <div class="card active" data-step="0">
+      <h2>Huvudmedlem <span class="amh">የአባል መረጃ</span></h2>
+      <div class="divider"></div>
+
+      <div class="row2">
+        <div>
+          <label>Församling <span class="amh">ደብር</span></label>
+          <input type="text" id="m_forsamling" placeholder="t.ex. Kidist Selassie – Stockholm" value="Kidist Selassie – Stockholm">
+        </div>
+        <div>
+          <label>Medlemsnummer <span class="amh">የአባልነት ቁጥር</span></label>
+          <input type="text" id="m_medlemsnr" placeholder="Tilldelas av administratör" disabled>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div><label>Förnamn <span class="amh">ስም</span></label><input type="text" id="m_fornamn" required></div>
+        <div><label>Efternamn <span class="amh">የአባት ስም</span></label><input type="text" id="m_efternamn" required></div>
+      </div>
+      <div class="row2">
+        <div><label>Dopnamn <span class="amh">የክርስትና ስም</span></label><input type="text" id="m_dopnamn"></div>
+        <div><label>Personnummer <span class="amh">መለያ ቁጥር</span></label><input type="text" id="m_personnummer" placeholder="ÅÅMMDD-XXXX"></div>
+      </div>
+      <label>Adress <span class="amh">አድራሻ</span></label>
+      <input type="text" id="m_adress">
+      <div class="row2">
+        <div><label>Stad <span class="amh">ከተማ</span></label><input type="text" id="m_stad"></div>
+        <div><label>Telefon <span class="amh">የስልክ ቁጥር</span></label><input type="tel" id="m_telefon"></div>
+      </div>
+      <label>E-post <span class="amh">ኢሜይል</span></label>
+      <input type="email" id="m_epost">
+
+      <div class="nav-buttons">
+        <button type="button" class="nav next" onclick="goTo(1)">Nästa →</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Spouse -->
+    <div class="card" data-step="1">
+      <h2>Make/Maka <span class="amh">የባለቤት መረጃ</span></h2>
+      <div class="divider"></div>
+
+      <div class="toggle-row">
+        <input type="checkbox" id="hasSpouse" onclick="toggleSpouse()">
+        <label for="hasSpouse" style="margin:0;">Registrera uppgifter om make/maka</label>
+      </div>
+
+      <div id="spouseFields" style="display:none;">
+        <div class="row2">
+          <div><label>Förnamn</label><input type="text" id="s_fornamn"></div>
+          <div><label>Efternamn</label><input type="text" id="s_efternamn"></div>
+        </div>
+        <div class="row2">
+          <div><label>Dopnamn</label><input type="text" id="s_dopnamn"></div>
+          <div><label>Personnummer</label><input type="text" id="s_personnummer"></div>
+        </div>
+        <div class="row2">
+          <div><label>Telefon</label><input type="tel" id="s_telefon"></div>
+          <div><label>E-post</label><input type="email" id="s_epost"></div>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button type="button" class="nav back" onclick="goTo(0)">← Tillbaka</button>
+        <button type="button" class="nav next" onclick="goTo(2)">Nästa →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Children -->
+    <div class="card" data-step="2">
+      <h2>Barn <span class="amh">የልጆች መረጃ</span></h2>
+      <div class="divider"></div>
+      <div id="childrenWrap"></div>
+      <button type="button" class="add-child" id="addChildBtn" onclick="addChild()">+ Lägg till barn</button>
+
+      <div class="nav-buttons">
+        <button type="button" class="nav back" onclick="goTo(1)">← Tillbaka</button>
+        <button type="button" class="nav next" onclick="goTo(3)">Nästa →</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Fee + Consent -->
+    <div class="card" data-step="3">
+      <h2>Medlemsavgift & Samtycke <span class="amh">የአባልነት ክፍያ</span></h2>
+      <div class="divider"></div>
+
+      <div class="row2">
+        <div><label>Avgift, per månad (kr)</label><input type="number" min="0" id="f_manad"></div>
+        <div><label>Registreringsavgift (kr)</label><input type="number" min="0" id="f_regavgift"></div>
+      </div>
+      <div class="row2">
+        <div><label>Övrigt</label><input type="text" id="f_ovrigt"></div>
+        <div><label>Registreringsdatum</label><input type="date" id="regDate"></div>
+      </div>
+
+      <div class="consent-box">
+        Genom att ansöka om medlemskap samtycker du till att kyrkan samlar in och behandlar dina personuppgifter i syfte
+        att upprätta och förvalta medlemsregistret, i enlighet med GDPR. Du kan när som helst återkalla ditt samtycke.
+      </div>
+      <div class="toggle-row">
+        <input type="checkbox" id="consent" required>
+        <label for="consent" style="margin:0;">Jag samtycker till ovanstående</label>
+      </div>
+
+      <label>Namnteckning (skriv ditt fulla namn) <span class="amh">ፊርማ</span></label>
+      <input type="text" id="signature" placeholder="Fullständigt namn som bekräftelse">
+
+      <div class="nav-buttons">
+        <button type="button" class="nav back" onclick="goTo(2)">← Tillbaka</button>
+        <button type="button" class="nav submit" onclick="submitForm()">Registrera medlem</button>
+      </div>
+    </div>
+
+  </form>
+
+  <!-- Confirmation -->
+  <div class="card confirm" id="confirmCard">
+    <svg class="cross" viewBox="0 0 40 40" style="margin:0 auto;"><path d="M20 4 V36 M8 14 H32 M13 8 L27 32 M27 8 L13 32" stroke="#B8862F"/></svg>
+    <h2>Registrering mottagen</h2>
+    <p>Medlemmen har lagts till i registret.</p>
+    <button type="button" class="nav next" style="max-width:220px;margin:16px auto 0;" onclick="resetForm()">Registrera ny medlem</button>
+  </div>
+
+  <div class="admin-toggle">
+    <button type="button" onclick="toggleAdmin()">Visa/dölj registrerade medlemmar (admin)</button>
+  </div>
+  <div id="adminPanel" style="display:none;"></div>
+
+  <div class="note">Prototyp — testa gärna, men skriv inte in riktiga personnummer i denna demo.</div>
+
+</div>
+
+<script>
+const steps = ['Medlem','Familj','Barn','Avgift'];
+let current = 0;
+let childCount = 0;
+
+function renderSteps(){
+  const el = document.getElementById('steps');
+  el.innerHTML = steps.map((s,i)=>{
+    const cls = i===current ? 'active' : (i<current ? 'done' : '');
+    return `<div class="step ${cls}"><div class="n">${i<current?'✓':i+1}</div>${s}</div>`;
+  }).join('');
+}
+function goTo(i){
+  document.querySelectorAll('.card[data-step]').forEach(c=>c.classList.remove('active'));
+  document.querySelector(`.card[data-step="${i}"]`).classList.add('active');
+  current = i;
+  renderSteps();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function toggleSpouse(){
+  document.getElementById('spouseFields').style.display =
+    document.getElementById('hasSpouse').checked ? 'block' : 'none';
+}
+function addChild(){
+  if(childCount>=5) return;
+  childCount++;
+  const wrap = document.getElementById('childrenWrap');
+  const div = document.createElement('div');
+  div.className='child-block';
+  div.innerHTML = `
+    <span class="badge">Barn ${childCount}</span>
+    <button type="button" class="remove-child" onclick="this.parentElement.remove()">Ta bort</button>
+    <div class="row2">
+      <div><label>För- och efternamn</label><input type="text" data-field="namn"></div>
+      <div><label>Dopnamn</label><input type="text" data-field="dopnamn"></div>
+    </div>
+    <div class="row2">
+      <div><label>Personnummer</label><input type="text" data-field="personnummer"></div>
+      <div><label>Kön</label>
+        <select data-field="kon"><option value="">Välj</option><option>Pojke</option><option>Flicka</option></select>
+      </div>
+    </div>`;
+  wrap.appendChild(div);
+  if(childCount>=5) document.getElementById('addChildBtn').style.display='none';
+}
+document.getElementById('regDate').valueAsDate = new Date();
+
+// Paste your Google Apps Script Web App URL here once deployed (see instructions).
+// Leave empty to keep using local demo storage only.
+const BACKEND_URL = "https://script.google.com/macros/s/AKfycbybf415y8lTKBGRRZZkH7ro3xG6Alu9pbyPumU5fefQBODe1gdcty7dGdTMT8ML6SF9/exec";
+
+function val(id){ const el = document.getElementById(id); return el ? el.value : ""; }
+
+function collectChildren(){
+  const blocks = document.querySelectorAll('#childrenWrap .child-block');
+  const children = [];
+  blocks.forEach(b=>{
+    children.push({
+      namn: b.querySelector('[data-field="namn"]').value,
+      dopnamn: b.querySelector('[data-field="dopnamn"]').value,
+      personnummer: b.querySelector('[data-field="personnummer"]').value,
+      kon: b.querySelector('[data-field="kon"]').value
+    });
+  });
+  return children;
+}
+
+async function submitForm(){
+  if(!document.getElementById('consent').checked){
+    alert('Vänligen bekräfta samtycke innan du fortsätter.');
+    return;
+  }
+  if(!val('m_fornamn') || !val('m_efternamn')){
+    alert('Förnamn och efternamn krävs.');
+    goTo(0);
+    return;
+  }
+
+  const record = {
+    date: new Date().toISOString().slice(0,10),
+    forsamling: val('m_forsamling'),
+    medlemsnr: val('m_medlemsnr'),
+    member: {
+      fornamn: val('m_fornamn'), efternamn: val('m_efternamn'), dopnamn: val('m_dopnamn'),
+      personnummer: val('m_personnummer'), adress: val('m_adress'), stad: val('m_stad'),
+      telefon: val('m_telefon'), epost: val('m_epost')
+    },
+    spouse: document.getElementById('hasSpouse').checked ? {
+      fornamn: val('s_fornamn'), efternamn: val('s_efternamn'), dopnamn: val('s_dopnamn'),
+      personnummer: val('s_personnummer'), telefon: val('s_telefon'), epost: val('s_epost')
+    } : null,
+    children: collectChildren(),
+    fee: { manadsavgift: val('f_manad'), regavgift: val('f_regavgift'), ovrigt: val('f_ovrigt'), regdatum: val('regDate') },
+    signature: val('signature')
+  };
+
+  // Always keep a local demo copy so the admin panel below works out of the box.
+  try{
+    await window.storage.set('members:'+Date.now(), JSON.stringify(record), true);
+  }catch(e){ console.error('Local storage error', e); }
+
+  // If a real backend is configured, also send it there.
+  if(BACKEND_URL){
+    try{
+      await fetch(BACKEND_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'text/plain'},
+        body: JSON.stringify(record)
+      });
+    }catch(e){ console.error('Backend submit error', e); }
+  }
+
+  document.querySelectorAll('.card[data-step]').forEach(c=>c.classList.remove('active'));
+  document.getElementById('confirmCard').style.display='block';
+}
+function resetForm(){
+  document.getElementById('confirmCard').style.display='none';
+  document.getElementById('regForm').reset();
+  document.getElementById('childrenWrap').innerHTML='';
+  childCount=0;
+  document.getElementById('addChildBtn').style.display='block';
+  document.getElementById('spouseFields').style.display='none';
+  goTo(0);
+}
+
+let adminOpen=false;
+async function toggleAdmin(){
+  adminOpen = !adminOpen;
+  const panel = document.getElementById('adminPanel');
+  if(!adminOpen){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  panel.innerHTML = 'Laddar…';
+  try{
+    const list = await window.storage.list('members:', true);
+    if(!list || !list.keys || list.keys.length===0){
+      panel.innerHTML = '<div class="note">Inga registreringar ännu.</div>';
+      return;
+    }
+    let rows = '';
+    for(const k of list.keys){
+      const r = await window.storage.get(k, true);
+      if(r && r.value){
+        const d = JSON.parse(r.value);
+        const nBarn = (d.children||[]).length;
+        rows += `<tr><td>${d.date}</td><td>${d.member.fornamn} ${d.member.efternamn}</td><td>${d.member.stad||''}</td><td>${d.forsamling||''}</td><td>${d.spouse?'Ja':'Nej'}</td><td>${nBarn}</td></tr>`;
+      }
+    }
+    panel.innerHTML = `<table class="admin"><tr><th>Datum</th><th>Namn</th><th>Stad</th><th>Församling</th><th>Make/Maka</th><th>Barn</th></tr>${rows}</table>`;
+  }catch(e){
+    panel.innerHTML = '<div class="note">Kunde inte läsa registret.</div>';
+  }
+}
+
+renderSteps();
+</script>
+</body>
+</html>

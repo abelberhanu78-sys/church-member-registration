@@ -31,7 +31,15 @@ function doPost(e) {
     Logger.log("✓ Data received: " + data.member.fornamn + " " + data.member.efternamn);
     Logger.log("DEBUG: Full data = " + JSON.stringify(data));
     
-    // Main member data - CORRECTED ORDER to match sheet structure
+    // Combine spouse first name and last name into full name
+    const spouseFullName = data.spouse 
+      ? (data.spouse.fornamn + " " + data.spouse.efternamn).trim() 
+      : '';
+    
+    // Use spouse dopnamn for baptism name in the Spouse Baptism Name column
+    const spouseBaptismName = data.spouse ? data.spouse.dopnamn : '';
+    
+    // Main member data - UPDATED to match sheet structure
     const memberRow = [
       data.date,
       data.member.fornamn,
@@ -42,9 +50,8 @@ function doPost(e) {
       data.member.stad,
       data.member.telefon,
       data.member.epost,
-      data.spouse ? data.spouse.fornamn : '',
-      data.spouse ? data.spouse.efternamn : '',
-      data.spouse ? data.spouse.dopnamn : '',  // Spouse Baptism Name
+      spouseFullName,           // Spouse Full Name (combined fornamn + efternamn)
+      spouseBaptismName,        // Spouse Baptism Name (dopnamn in the "Spouse Last Name" column)
       data.spouse ? data.spouse.epost : '',    // Spouse Email
       data.children ? data.children.length : 0,
       data.fee.manadsavgift || '',
@@ -162,6 +169,11 @@ function testRegistration() {
       signature: "Test Parent"
     };
     
+    const spouseFullName = mockData.spouse 
+      ? (mockData.spouse.fornamn + " " + mockData.spouse.efternamn).trim() 
+      : '';
+    const spouseBaptismName = mockData.spouse ? mockData.spouse.dopnamn : '';
+    
     const memberRow = [
       mockData.date,
       mockData.member.fornamn,
@@ -172,9 +184,8 @@ function testRegistration() {
       mockData.member.stad,
       mockData.member.telefon,
       mockData.member.epost,
-      mockData.spouse.fornamn,
-      mockData.spouse.efternamn,
-      mockData.spouse.dopnamn,
+      spouseFullName,
+      spouseBaptismName,
       mockData.spouse.epost,
       mockData.children.length,
       mockData.fee.manadsavgift,

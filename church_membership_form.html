@@ -282,7 +282,7 @@
         <div><label>Registreringsavgift (kr)</label><input type="number" min="0" id="f_regavgift"></div>
       </div>
       <div class="row2">
-        <div><label>Övrigt</label><input type="text" id="f_ovrigt"></div>
+        <div><label>Andlig far (spirituell ledare)</label><input type="text" id="f_spiritualfather"></div>
         <div><label>Registreringsdatum</label><input type="date" id="regDate"></div>
       </div>
 
@@ -414,7 +414,7 @@ async function submitForm(){
       personnummer: val('s_personnummer'), telefon: val('s_telefon'), epost: val('s_epost')
     } : null,
     children: collectChildren(),
-    fee: { manadsavgift: val('f_manad'), regavgift: val('f_regavgift'), ovrigt: val('f_ovrigt'), regdatum: val('regDate') },
+    fee: { manadsavgift: val('f_manad'), regavgift: val('f_regavgift'), spiritualfather: val('f_spiritualfather'), regdatum: val('regDate') },
     signature: val('signature')
   };
 

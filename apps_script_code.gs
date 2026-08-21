@@ -21,7 +21,7 @@ function doPost(e) {
     Logger.log("DEBUG: Children array = " + JSON.stringify(data.children));
     Logger.log("DEBUG: Children length = " + (data.children ? data.children.length : 0));
     
-    // Main member data
+    // Main member data - UPDATED to include spouse baptism name and spiritual father
     const memberRow = [
       data.date,
       data.member.fornamn,
@@ -34,11 +34,12 @@ function doPost(e) {
       data.member.epost,
       data.spouse ? data.spouse.fornamn : '',
       data.spouse ? data.spouse.efternamn : '',
+      data.spouse ? data.spouse.dopnamn : '',  // Added: Spouse baptism name
       data.spouse ? data.spouse.epost : '',
       data.children ? data.children.length : 0,
       data.fee.manadsavgift || '',
       data.fee.regavgift || '',
-      data.fee.ovrigt || '',
+      data.fee.spiritualfather || '',  // Changed from "ovrigt" to "spiritualfather"
       data.signature
     ];
     
@@ -135,7 +136,14 @@ function testRegistration() {
         telefon: "0701234567",
         epost: "test@example.com"
       },
-      spouse: null,
+      spouse: {
+        fornamn: "Test",
+        efternamn: "Spouse",
+        dopnamn: "Testina",
+        personnummer: "900202-5678",
+        telefon: "0702345678",
+        epost: "spouse@example.com"
+      },
       children: [
         { namn: "Child One", dopnamn: "Christen", personnummer: "200101-1111", kon: "Pojke" },
         { namn: "Child Two", dopnamn: "Christina", personnummer: "200202-2222", kon: "Flicka" },
@@ -144,7 +152,7 @@ function testRegistration() {
       fee: {
         manadsavgift: "500",
         regavgift: "100",
-        ovrigt: ""
+        spiritualfather: "Father John"
       },
       signature: "Test Parent"
     };
@@ -159,18 +167,19 @@ function testRegistration() {
       mockData.member.stad,
       mockData.member.telefon,
       mockData.member.epost,
-      "",
-      "",
-      "",
+      mockData.spouse ? mockData.spouse.fornamn : '',
+      mockData.spouse ? mockData.spouse.efternamn : '',
+      mockData.spouse ? mockData.spouse.dopnamn : '',
+      mockData.spouse ? mockData.spouse.epost : '',
       mockData.children.length,
       mockData.fee.manadsavgift,
       mockData.fee.regavgift,
-      mockData.fee.ovrigt,
+      mockData.fee.spiritualfather,
       mockData.signature
     ];
     
     memberSheet.appendRow(memberRow);
-    Logger.log("✓ Test member added");
+    Logger.log("✓ Test member added with spouse");
     
     const parentName = mockData.member.fornamn + " " + mockData.member.efternamn;
     

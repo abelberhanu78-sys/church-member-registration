@@ -1,6 +1,8 @@
 function doPost(e) {
   try {
     Logger.log("=== Processing Registration ===");
+    Logger.log("Event object: " + JSON.stringify(e));
+    Logger.log("postData: " + JSON.stringify(e.postData));
     
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const memberSheet = ss.getSheetByName("Church Member Registrations");
@@ -13,13 +15,21 @@ function doPost(e) {
     
     Logger.log("✓ Sheets found");
     
-    const data = JSON.parse(e.postData.contents);
-    Logger.log("✓ Data parsed: " + data.member.fornamn + " " + data.member.efternamn);
+    // Parse the incoming data
+    let data;
+    if (e.postData && e.postData.contents) {
+      data = JSON.parse(e.postData.contents);
+      Logger.log("✓ Data parsed from postData.contents");
+    } else if (e.parameter) {
+      // Fallback for form-encoded data
+      data = JSON.parse(e.parameter.data || '{}');
+      Logger.log("✓ Data parsed from parameter");
+    } else {
+      throw new Error("No data received in request");
+    }
     
-    // DEBUG: Log the raw data to see what we're getting
+    Logger.log("✓ Data received: " + data.member.fornamn + " " + data.member.efternamn);
     Logger.log("DEBUG: Full data = " + JSON.stringify(data));
-    Logger.log("DEBUG: Children array = " + JSON.stringify(data.children));
-    Logger.log("DEBUG: Children length = " + (data.children ? data.children.length : 0));
     
     // Main member data - CORRECTED ORDER to match sheet structure
     const memberRow = [
@@ -39,13 +49,13 @@ function doPost(e) {
       data.children ? data.children.length : 0,
       data.fee.manadsavgift || '',
       data.fee.regavgift || '',
-      data.fee.spiritualfather || '',  // Spiritual Father (in "Other" column)
+      data.fee.spiritualfather || '',  // Spiritual Father
       data.signature
     ];
     
     try {
       memberSheet.appendRow(memberRow);
-      Logger.log("✓ Member row added");
+      Logger.log("✓ Member row added successfully");
     } catch (err) {
       Logger.log("ERROR adding member: " + err.toString());
       throw err;
@@ -85,11 +95,7 @@ function doPost(e) {
         }
       }
     } else {
-      Logger.log("No children to process or children array is empty/not array");
-      if (data.children) {
-        Logger.log("Children type: " + typeof data.children);
-        Logger.log("Is array: " + Array.isArray(data.children));
-      }
+      Logger.log("No children to process");
     }
     
     Logger.log("=== Processing Complete ===");
@@ -146,8 +152,7 @@ function testRegistration() {
       },
       children: [
         { namn: "Child One", dopnamn: "Christen", personnummer: "200101-1111", kon: "Pojke" },
-        { namn: "Child Two", dopnamn: "Christina", personnummer: "200202-2222", kon: "Flicka" },
-        { namn: "Child Three", dopnamn: "Christopher", personnummer: "200303-3333", kon: "Pojke" }
+        { namn: "Child Two", dopnamn: "Christina", personnummer: "200202-2222", kon: "Flicka" }
       ],
       fee: {
         manadsavgift: "500",
@@ -167,10 +172,10 @@ function testRegistration() {
       mockData.member.stad,
       mockData.member.telefon,
       mockData.member.epost,
-      mockData.spouse ? mockData.spouse.fornamn : '',
-      mockData.spouse ? mockData.spouse.efternamn : '',
-      mockData.spouse ? mockData.spouse.dopnamn : '',
-      mockData.spouse ? mockData.spouse.epost : '',
+      mockData.spouse.fornamn,
+      mockData.spouse.efternamn,
+      mockData.spouse.dopnamn,
+      mockData.spouse.epost,
       mockData.children.length,
       mockData.fee.manadsavgift,
       mockData.fee.regavgift,
@@ -179,7 +184,7 @@ function testRegistration() {
     ];
     
     memberSheet.appendRow(memberRow);
-    Logger.log("✓ Test member added with spouse");
+    Logger.log("✓ Test member added");
     
     const parentName = mockData.member.fornamn + " " + mockData.member.efternamn;
     
@@ -196,7 +201,7 @@ function testRegistration() {
       Logger.log("✓ Child " + (index + 1) + " added: " + child.namn);
     });
     
-    Logger.log("=== Test Complete! Check both sheets ===");
+    Logger.log("=== Test Complete! ===");
     
   } catch (error) {
     Logger.log("❌ TEST ERROR: " + error.toString());

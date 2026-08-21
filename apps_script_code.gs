@@ -21,7 +21,7 @@ function doPost(e) {
     Logger.log("DEBUG: Children array = " + JSON.stringify(data.children));
     Logger.log("DEBUG: Children length = " + (data.children ? data.children.length : 0));
     
-    // Main member data - UPDATED to include spouse baptism name and spiritual father
+    // Main member data - CORRECTED ORDER to match sheet structure
     const memberRow = [
       data.date,
       data.member.fornamn,
@@ -34,12 +34,12 @@ function doPost(e) {
       data.member.epost,
       data.spouse ? data.spouse.fornamn : '',
       data.spouse ? data.spouse.efternamn : '',
-      data.spouse ? data.spouse.dopnamn : '',  // Added: Spouse baptism name
-      data.spouse ? data.spouse.epost : '',
+      data.spouse ? data.spouse.dopnamn : '',  // Spouse Baptism Name
+      data.spouse ? data.spouse.epost : '',    // Spouse Email
       data.children ? data.children.length : 0,
       data.fee.manadsavgift || '',
       data.fee.regavgift || '',
-      data.fee.spiritualfather || '',  // Changed from "ovrigt" to "spiritualfather"
+      data.fee.spiritualfather || '',  // Spiritual Father (in "Other" column)
       data.signature
     ];
     

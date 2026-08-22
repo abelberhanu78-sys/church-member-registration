@@ -31,33 +31,28 @@ function doPost(e) {
     Logger.log("✓ Data received: " + data.member.fornamn + " " + data.member.efternamn);
     Logger.log("DEBUG: Full data = " + JSON.stringify(data));
     
-    // Combine spouse first name and last name into full name
-    const spouseFullName = data.spouse 
-      ? (data.spouse.fornamn + " " + data.spouse.efternamn).trim() 
-      : '';
-    
-    // Use spouse dopnamn for baptism name in the Spouse Baptism Name column
-    const spouseBaptismName = data.spouse ? data.spouse.dopnamn : '';
-    
-    // Main member data - UPDATED to match sheet structure
+    // Main member data - COLUMNS A to Q
     const memberRow = [
-      data.date,
-      data.member.fornamn,
-      data.member.efternamn,
-      data.member.dopnamn,
-      data.member.personnummer,
-      data.member.adress,
-      data.member.stad,
-      data.member.telefon,
-      data.member.epost,
-      spouseFullName,           // Spouse Full Name (combined fornamn + efternamn)
-      spouseBaptismName,        // Spouse Baptism Name (dopnamn in the "Spouse Last Name" column)
-      data.spouse ? data.spouse.epost : '',    // Spouse Email
-      data.children ? data.children.length : 0,
-      data.fee.manadsavgift || '',
-      data.fee.regavgift || '',
-      data.fee.spiritualfather || '',  // Spiritual Father
-      data.signature
+      data.date,                                  // A: Date
+      data.member.fornamn,                        // B: First Name
+      data.member.efternamn,                      // C: Last Name
+      data.member.dopnamn,                        // D: Baptism Name
+      data.member.personnummer,                   // E: Social Security Number
+      data.member.adress,                         // F: Address
+      data.member.stad,                           // G: City
+      data.member.telefon,                        // H: Phone
+      data.member.epost,                          // I: Email
+      data.spouse ? data.spouse.fornamn : '',     // J: Spouse First Name
+      data.spouse ? data.spouse.efternamn : '',   // K: Spouse Last Name
+      data.spouse ? data.spouse.personnummer : '', // L: Spouse Social Security Number
+      data.spouse ? data.spouse.telefon : '',     // M: Spouse Phone Number
+      data.spouse ? data.spouse.dopnamn : '',     // N: Spouse Spiritual Name (dopnamn)
+      data.spouse ? data.spouse.epost : '',       // O: Spouse Email
+      data.children ? data.children.length : 0,   // P: Number of Children
+      data.fee.manadsavgift || '',                // Q: Monthly Fee
+      data.fee.regavgift || '',                   // R: Registration Fee
+      data.fee.spiritualfather || '',             // S: Spiritual Father
+      data.signature                              // T: Signature
     ];
     
     try {
@@ -169,11 +164,6 @@ function testRegistration() {
       signature: "Test Parent"
     };
     
-    const spouseFullName = mockData.spouse 
-      ? (mockData.spouse.fornamn + " " + mockData.spouse.efternamn).trim() 
-      : '';
-    const spouseBaptismName = mockData.spouse ? mockData.spouse.dopnamn : '';
-    
     const memberRow = [
       mockData.date,
       mockData.member.fornamn,
@@ -184,8 +174,11 @@ function testRegistration() {
       mockData.member.stad,
       mockData.member.telefon,
       mockData.member.epost,
-      spouseFullName,
-      spouseBaptismName,
+      mockData.spouse.fornamn,
+      mockData.spouse.efternamn,
+      mockData.spouse.personnummer,
+      mockData.spouse.telefon,
+      mockData.spouse.dopnamn,
       mockData.spouse.epost,
       mockData.children.length,
       mockData.fee.manadsavgift,
